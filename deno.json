@@ -1,0 +1,20 @@
+{
+  "tasks": {
+    "dev": "deno run --unstable-kv --unstable-cron --allow-env --allow-run=/usr/bin/nmap --allow-read=/usr/bin/nmap,./.kv,./logs,.login,.env,.env.defaults,.env.example --allow-write=./.kv,./logs,.login --allow-net --watch src/main.ts",
+    "update": "deno run --no-prompt --unstable-kv --unstable-cron --allow-env --allow-run=/usr/bin/nmap --allow-read=/usr/bin/nmap,./.kv,./logs,.login,.env,.env.defaults,.env.example --allow-write=./replays,./.kv,./logs,.login --allow-net src/main.ts",
+    "dump": "deno run --unstable-kv --allow-read=.kv --allow-write=.kv src/dump.ts",
+    "check": "deno fmt --check && deno lint && deno task check:types",
+    "check:types": "deno check --unstable-kv --no-lock src/**/*.ts"
+  },
+  "fmt": {
+    "useTabs": false,
+    "lineWidth": 120,
+    "indentWidth": 2,
+    "singleQuote": true,
+    "proseWrap": "preserve"
+  },
+  "compilerOptions": {
+    "noUncheckedIndexedAccess": true
+  },
+  "importMap": "./import_map.json"
+}

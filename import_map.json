@@ -1,0 +1,9 @@
+{
+  "imports": {
+    "dotenv/": "https://deno.land/std@0.207.0/dotenv/",
+    "testing/": "https://deno.land/std@0.207.0/testing/",
+    "log/": "https://deno.land/std@0.207.0/log/",
+    "path/": "https://deno.land/std@0.207.0/path/",
+    "@evotm/gbxclient": "npm:@evotm/gbxclient@1.4.0"
+  }
+}
