@@ -61,6 +61,7 @@ export default function Filters({ isLoading, rooms, total, page }: FiltersProps)
             value={search}
             onInput={(event) => {
               search.value = (event.target as HTMLInputElement).value;
+              page.value = 0;
             }}
           />
         </div>
@@ -74,6 +75,7 @@ export default function Filters({ isLoading, rooms, total, page }: FiltersProps)
                 value={serverType}
                 onInput={(event) => {
                   serverType.value = (event.target as HTMLSelectElement).value;
+                  page.value = 0;
                 }}
               >
                 <option value='any'>Any</option>
@@ -93,6 +95,7 @@ export default function Filters({ isLoading, rooms, total, page }: FiltersProps)
                 value={sortBy}
                 onInput={(event) => {
                   sortBy.value = (event.target as HTMLSelectElement).value;
+                  page.value = 0;
                 }}
               >
                 <option value='player-count-asc'>Player Count (asc.)</option>

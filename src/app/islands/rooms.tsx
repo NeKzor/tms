@@ -1,10 +1,11 @@
 // Copyright (c) 2023, NeKz
 // SPDX-License-Identifier: MIT
 
-import { useComputed, useSignal } from '@preact/signals';
+import { useSignal } from '@preact/signals';
 import { ServerRoom } from '../../models.ts';
 import Filters from '../islands/filters.tsx';
 import { getCountry, getRegion } from '../utils.ts';
+import Pagination from '../components/pagination.tsx';
 
 interface RoomsProps {
   rooms: ServerRoom[];
@@ -16,12 +17,17 @@ export default function Rooms(props: RoomsProps) {
   const rooms = useSignal<ServerRoom[]>(props.rooms);
   const page = useSignal(0);
   const total = useSignal(props.total);
-  const pages = useComputed(() => new Array(Math.ceil(total.value / 50)).fill(1));
 
   return (
     <>
       <div className='overflow-x-auto'>
         <Filters isLoading={isLoading} rooms={rooms} total={total} page={page} />
+        <div class='flex flex-col items-center mt-4'>
+          <Pagination page={page} total={total} />
+        </div>
+        {total.value !== 0 && (
+          <div>Showing {(page.value * 50) + 1}-{Math.min(total.value, (page.value + 1) * 50)} of {total}</div>
+        )}
         <div className='h-10'>
           {isLoading.value && <progress class='progress'></progress>}
         </div>
@@ -35,6 +41,7 @@ export default function Rooms(props: RoomsProps) {
               <th class='name' title='Name of server'>Name</th>
               <th class='host' title='Server host'>Host</th>
               <th class='rpc' title='Public RPC port available?'>RPC?</th>
+              <th class='private' title='Is the server private?'>Private?</th>
             </tr>
           </thead>
           <tbody>
@@ -75,22 +82,16 @@ export default function Rooms(props: RoomsProps) {
                       [serverData?.canLoginSuperAdmin, 'SuperAdmin'],
                     ].filter((x) => !!x.at(0)).map((x) => x.at(1)).join(' ')}
                   </td>
+                  <td class='private'>
+                    {server?.isPrivate && <span class='cursor-help' title='Private server'>🔒</span>}
+                  </td>
                 </tr>
               );
             })}
           </tbody>
         </table>
-        <div class='join mt-4'>
-          {pages.value.map((_, index) => {
-            return (
-              <button
-                class={`join-item btn btn-md ${page.value === index ? 'btn-active' : ''}`}
-                onClick={() => page.value = index}
-              >
-                {index + 1}
-              </button>
-            );
-          })}
+        <div class='flex flex-col items-center mt-4'>
+          <Pagination page={page} total={total} />
         </div>
       </div>
     </>

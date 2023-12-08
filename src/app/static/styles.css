@@ -26,10 +26,17 @@ table.rooms {
 
     .name {
         min-width: 300px;
+        max-width: 300px;
     }
 
     .host {
-        min-width: 300px;
+        min-width: 200px;
+        max-width: 200px;
+    }
+
+    .rpc {
+        max-width: 100px;
+        text-align: center;
     }
 
     .rpc {
