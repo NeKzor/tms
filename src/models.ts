@@ -4,9 +4,9 @@
 import { ClubRoom, Server } from './api.ts';
 
 export interface ServerRoom {
-  room: ClubRoom;
+  room: ClubRoom & { name_readable: string };
   lastUpdate: Date;
-  server?: Server;
+  server?: Server & { name_readable: string };
   host?: string;
   openRpcPort?: boolean;
   sc?: string;
@@ -39,5 +39,11 @@ export interface ServerRoom {
       IsServer: boolean;
       IsDedicated: boolean;
     };
+  };
+  serverLocation?: {
+    country: string;
+    countryCode: string;
+    region: string;
+    regionName: string;
   };
 }

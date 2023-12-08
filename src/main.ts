@@ -7,6 +7,7 @@ import { flushFileLogger, logFetchRequest, logger } from './logger.ts';
 import { Session } from './session.ts';
 import { ServerRoom } from './models.ts';
 import { getServerData } from './gbx.ts';
+import { stripControlCharacters } from './utils.ts';
 
 const isUsingDenoDeploy = Deno.env.get('DENO_DEPLOYMENT_ID') !== undefined;
 if (!isUsingDenoDeploy) {
@@ -52,11 +53,15 @@ logger.info('Fetched', rooms.length, 'rooms');
 const decoder = new TextDecoder();
 
 for (const room of rooms) {
+  (room as ServerRoom['room']).name_readable = stripControlCharacters(room.name);
+
   await kv.set(['rooms', room.id], { room, lastUpdate: new Date() } satisfies ServerRoom);
 
   if (room.room.serverAccountId) {
     try {
       const server = await trackmania.servers(room.room.serverAccountId);
+
+      (server as ServerRoom['server'])!.name_readable = stripControlCharacters(server.name);
 
       await kv.set(
         ['rooms', room.id],
