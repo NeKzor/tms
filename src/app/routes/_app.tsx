@@ -2,20 +2,21 @@
 // SPDX-License-Identifier: MIT
 
 import { type PageProps } from '$fresh/server.ts';
+import type { State } from './_middleware.ts';
 
-export default function App({ Component }: PageProps) {
+export default function App({ Component, state }: PageProps<unknown, State>) {
   return (
     <html>
       <head>
         <meta charset='utf-8' />
         <meta name='viewport' content='width=device-width, initial-scale=1.0' />
-        <title>tms.nekz.me</title>
+        <title>Trackmania Servers | {state.context.domain}</title>
         <link
           href='https://cdn.jsdelivr.net/npm/daisyui@4.4.4/dist/full.min.css'
           rel='stylesheet'
           type='text/css'
         />
-        <script src='https://cdn.tailwindcss.com'></script>
+        <link rel='stylesheet' href='styles.css' />
       </head>
       <body>
         <div className='navbar bg-base-100 sticky top-0'>
@@ -91,7 +92,7 @@ export default function App({ Component }: PageProps) {
         <Component />
         <footer className='footer footer-center p-4 bg-base-100 text-base-content'>
           <aside>
-            <a class="hover:text-primary" href='https://github.com/NeKzor' target='_blank'>© 2023 NeKz</a>
+            <a class='hover:text-primary' href='https://github.com/NeKzor' target='_blank'>© 2023 NeKz</a>
           </aside>
         </footer>
       </body>

@@ -4,3 +4,36 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+table.rooms {
+    .room {
+        min-width: 200px;
+    }
+
+    .region {
+        min-width: 20px;
+        text-align: center;
+    }
+
+    .players {
+        min-width: 20px;
+        text-align: center;
+    }
+
+    .server {
+        min-width: 150px;
+    }
+
+    .name {
+        min-width: 300px;
+    }
+
+    .host {
+        min-width: 300px;
+    }
+
+    .rpc {
+        max-width: 100px;
+        text-align: center;
+    }
+}

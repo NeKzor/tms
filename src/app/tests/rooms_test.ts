@@ -4,15 +4,17 @@
 import { assert } from '$std/assert/mod.ts';
 import { ServerRoom } from '../../models.ts';
 
+const baseApi = 'http://localhost:8000/api';
+
 Deno.test('Rooms API', async () => {
-  const res = await fetch('http://localhost:8000/api/rooms');
+  const res = await fetch(`${baseApi}/rooms`);
   const json = await res.json() as { rooms: ServerRoom[] };
   assert(json);
   assert(json.rooms);
 });
 
 Deno.test('Rooms API sorted by player count desc', async () => {
-  const res = await fetch('http://localhost:8000/api/rooms?sort-by=player-count-desc');
+  const res = await fetch(`${baseApi}/rooms?sort-by=player-count-desc`);
   const json = await res.json() as { rooms: ServerRoom[] };
   assert(json);
   assert(json.rooms);
@@ -21,17 +23,16 @@ Deno.test('Rooms API sorted by player count desc', async () => {
 });
 
 Deno.test('Rooms API sorted by player count asc', async () => {
-    const res = await fetch('http://localhost:8000/api/rooms?sort-by=player-count-asc');
-    const json = await res.json() as { rooms: ServerRoom[] };
-    assert(json);
-    assert(json.rooms);
-    assert(json.rooms.length > 1);
-    assert(json.rooms.at(0)!.room.room.playerCount < json.rooms.at(-1)!.room.room.playerCount);
-  });
-  
+  const res = await fetch(`${baseApi}/rooms?sort-by=player-count-asc`);
+  const json = await res.json() as { rooms: ServerRoom[] };
+  assert(json);
+  assert(json.rooms);
+  assert(json.rooms.length > 1);
+  assert(json.rooms.at(0)!.room.room.playerCount < json.rooms.at(-1)!.room.room.playerCount);
+});
 
 Deno.test('Rooms API sorted by room ID desc', async () => {
-  const res = await fetch('http://localhost:8000/api/rooms?sort-by=room-id-desc');
+  const res = await fetch(`${baseApi}/rooms?sort-by=room-id-desc`);
   const json = await res.json() as { rooms: ServerRoom[] };
   assert(json);
   assert(json.rooms);
@@ -40,11 +41,10 @@ Deno.test('Rooms API sorted by room ID desc', async () => {
 });
 
 Deno.test('Rooms API sorted by room ID asc', async () => {
-    const res = await fetch('http://localhost:8000/api/rooms?sort-by=room-id-asc');
-    const json = await res.json() as { rooms: ServerRoom[] };
-    assert(json);
-    assert(json.rooms);
-    assert(json.rooms.length > 1);
-    assert(json.rooms.at(0)!.room.id < json.rooms.at(-1)!.room.id);
-  });
-  
+  const res = await fetch(`${baseApi}/rooms?sort-by=room-id-asc`);
+  const json = await res.json() as { rooms: ServerRoom[] };
+  assert(json);
+  assert(json.rooms);
+  assert(json.rooms.length > 1);
+  assert(json.rooms.at(0)!.room.id < json.rooms.at(-1)!.room.id);
+});

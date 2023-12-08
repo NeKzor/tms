@@ -17,8 +17,8 @@ const sorters: Record<string, (a: ServerRoom, b: ServerRoom) => number> = {
   'room-id-desc': (a, b) => b.room.id - a.room.id,
   'room-name-asc': (a, b) => a.room.name_readable.localeCompare(b.room.name_readable),
   'room-name-desc': (a, b) => b.room.name_readable.localeCompare(a.room.name_readable),
-  'sever-name-asc': (a, b) => a.server?.name?.localeCompare(b.server?.name ?? '') ?? 0,
-  'sever-name-desc': (a, b) => b.server?.name?.localeCompare(a.server?.name ?? '') ?? 0,
+  'sever-name-asc': (a, b) => a.server?.name_readable?.localeCompare(b.server?.name_readable ?? '') ?? 0,
+  'sever-name-desc': (a, b) => b.server?.name_readable?.localeCompare(a.server?.name_readable ?? '') ?? 0,
 };
 
 export const handler: Handlers = {
@@ -27,6 +27,7 @@ export const handler: Handlers = {
 
     const search = (url.searchParams.get('search')?.trim() ?? '').toLowerCase();
     const maxItems = Number(url.searchParams.get('max-items') ?? '');
+    const page = Number(url.searchParams.get('page') ?? '');
 
     const serverTypeFilter = serverTypeFilters[url.searchParams.get('server-type') ?? ''];
 
@@ -35,16 +36,22 @@ export const handler: Handlers = {
         ? (value) => {
           return (!serverTypeFilter || serverTypeFilter(value)) && (
             value.room.name_readable.toLowerCase().includes(search) ||
-            !!value.server?.name_readable?.toLowerCase()?.includes(search)
+            !!value.server?.name_readable?.toLowerCase()?.includes(search) ||
+            !!value.server?.login?.toLowerCase()?.includes(search) ||
+            !!value.host?.toLowerCase()?.includes(search)
           );
         }
         : serverTypeFilter,
-      max: !isNaN(maxItems) ? maxItems : undefined,
     });
 
     rooms.sort(sorters[url.searchParams.get('sort-by') ?? 'player-count-desc']);
 
-    return new Response(JSON.stringify({ rooms }), {
+    const count = !isNaN(maxItems) && maxItems ? maxItems : 50;
+    const index = page >= 0 ? page : 0;
+    const start = index * count;
+    const end = (index + 1) * count;
+
+    return new Response(JSON.stringify({ rooms: rooms.slice(start, end), total: rooms.length }), {
       headers: { 'Content-Type': 'application/json' },
     });
   },

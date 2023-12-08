@@ -7,10 +7,14 @@ import { useDebounce, useIsMounted } from './hooks.ts';
 
 interface FiltersProps {
   rooms: Signal<ServerRoom[]>;
+  total: Signal<number>;
   isLoading: Signal<boolean>;
+  page: Signal<number>;
 }
 
-export default function Filters({ isLoading, rooms }: FiltersProps) {
+let ac = new AbortController();
+
+export default function Filters({ isLoading, rooms, total, page }: FiltersProps) {
   const search = useSignal('');
   const searchDebounced = useDebounce(200, search.value);
 
@@ -22,15 +26,21 @@ export default function Filters({ isLoading, rooms }: FiltersProps) {
       'search': searchDebounced.value,
       'server-type': serverType.value,
       'sort-by': sortBy.value,
+      'page': page.value.toString(),
     });
 
     if (isMounted.current) {
+      ac.abort();
       isLoading.value = true;
+      ac = new AbortController();
 
-      fetch(`http://localhost:8000/api/rooms?${params.toString()}`)
-        .then((res) => res.json() as Promise<{ rooms: ServerRoom[] }>)
+      fetch(`/api/rooms?${params.toString()}`, { signal: ac.signal })
+        .then((res) => res.json() as Promise<{ rooms: ServerRoom[]; total: number }>)
         .then((data) => {
-          rooms.value = data.rooms;
+          if (isMounted.current) {
+            rooms.value = data.rooms;
+            total.value = data.total;
+          }
         })
         .catch(console.error)
         .finally(() => isLoading.value = false);
@@ -42,7 +52,7 @@ export default function Filters({ isLoading, rooms }: FiltersProps) {
   return (
     <div>
       <div class='flex col gap-4'>
-        <div class="flex-auto">
+        <div class='flex-auto'>
           <input
             type='text'
             placeholder='Search...'

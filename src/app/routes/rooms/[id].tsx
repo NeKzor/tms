@@ -2,8 +2,10 @@
 // SPDX-License-Identifier: MIT
 
 import { Handlers, PageProps } from '$fresh/server.ts';
+import { Head } from '$fresh/runtime.ts';
 import { ServerRoom } from '../../../models.ts';
 import { db } from '../../db.ts';
+import type { State } from '../_middleware.ts';
 
 interface RoomData {
   room: ServerRoom;
@@ -25,11 +27,14 @@ export const handler: Handlers<RoomData> = {
   },
 };
 
-export default function Room(props: PageProps<RoomData>) {
+export default function Room({ data: { room }, state: { context } }: PageProps<RoomData, State>) {
   return (
     <>
+      <Head>
+        <title>{room.room.name_readable} | Room | {context.domain}</title>
+      </Head>
       <div className='overflow-x-auto'>
-        {props.data.room.room.name}
+        {room.room.name_readable}
       </div>
     </>
   );

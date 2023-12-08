@@ -4,6 +4,8 @@
 .kv-shm
 .kv-wal
 .login
+src/remote.ts
+result.md
 
 node_modules/
 coverage/
